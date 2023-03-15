@@ -17,6 +17,9 @@ namespace CSharpCodingChallengeTest
         [InlineData(" ", INVALID_INPUT)]
         [InlineData("1", INVALID_INPUT)]
         [InlineData("2271#", INVALID_INPUT)]
+        [InlineData("5555555#", INVALID_INPUT)]
+        [InlineData("**5***5#","J")]
+        [InlineData("x#", INVALID_INPUT)]
         public void OldPhonePad_WhenPassedNumberCombination_ReturnsWord(string input, string expectedOutput)
         {
             //Arrange, Act

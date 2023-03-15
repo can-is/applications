@@ -5,8 +5,6 @@
     /// </summary>
     public class OldPhonePadApplication
     {
-        private const string INVALID_INPUT = "Invalid Input";
-
         private OldPhonePadApplication()
         {
         }
@@ -25,15 +23,12 @@
 
         private void Process(string input, out string output)
         {
-            char previousNumber = '~';
-            int numberCount = 0;
-            output = string.Empty;
-            if (!this.ValidateInput(input))
+            try
             {
-                output = INVALID_INPUT;
-            }
-            else
-            {
+                char previousNumber = '~';
+                int numberCount = 0;
+                output = string.Empty;
+                this.ValidateInput(input);
                 foreach (char currentnNumber in input)
                 {
                     if (currentnNumber == '#')
@@ -57,6 +52,10 @@
                     previousNumber = currentnNumber;
                 }
             }
+            catch (InvalidInputException ex)
+            {
+                output = ex.Message;
+            }
         }
 
         private void ConvertToWord(
@@ -72,19 +71,39 @@
             }
 
             List<string> stringList = keyPadConfiguration[previousNumber];
+
+            if (stringList.Count <= numberCount)
+            {
+                throw new InvalidInputException();
+            }
+
             output += stringList[numberCount];
         }
 
-        private bool ValidateInput(string input)
+        private void ValidateInput(string input)
         {
             bool flag = true;
             if (input.StartsWith("#"))
-            { flag = false; }
+            { 
+                flag = false;
+            }
             else if (input.Contains("1"))
-            { flag = false; }
+            { 
+                flag = false;
+            }
             else if (input == " ")
-            { flag = false; }
-            return flag;
+            { 
+                flag = false; 
+            }
+            else if (input.Any(x => char.IsLetter(x)))
+            {
+                flag = false;
+            }
+            
+            if(flag == false)
+            {
+                throw new InvalidInputException();
+            }
         }
     }
 }
